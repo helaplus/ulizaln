@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Subscription;
+use App\Models\Transaction;
 use App\Models\WhatsappLog;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class SomachatController extends Controller
@@ -27,7 +29,12 @@ class SomachatController extends Controller
         //check sub
         if(!$this->checkSub($contact)){
             //Generate invoice
-            $message = 'Hello there, please subscribe to continue';
+            $media = $this->generateQrcode($contact);
+            $message = 'Hello there, please subscribe to continue. Pay using lightning payments. An invoice has been generated for you. Use the payment request string '.$media['pr'].' or use the qr-code';
+
+            $res = $this->sendMediaMessage($contact,'image',$media['qr-code'],$message);
+            Log::info(json_encode($res));
+            exit;
         }
 
             if(isset($details['messages'][0]['interactive']['button_reply'])){
@@ -128,22 +135,81 @@ class SomachatController extends Controller
     public function sub(){
 
     }
-    public function generateQrcode(){
-        $payment_request=self::generatePaymentRequest();
+    public function generateQrcode($phone){
+        $payment_request=self::generatePaymentRequest($phone);
         if(!$payment_request){
             return false;
         }
         $qr='qr'.rand(11111,1111111).'.png';
-        QrCode::format('png')->generate($payment_request,'../public/qrcodes/'.$qr);
-        return $qr;
+        QrCode::format('png')->generate($payment_request,storage_path($qr));
+        $res = $this->uploadMedia(storage_path($qr));
+        Log::info(json_encode($res));
+        return [
+            'qr-code' => $res['media'][0]['id'],
+            'pr' => $payment_request
+        ];
     }
-    public function generatePaymentRequest() {
+
+    public function generatePaymentRequest($phone) {
         $url=config('app.lightinging_url');
         $response=Http::get($url);
         $content =json_decode($response->body(),true);
         if(!$content){
             return false;
         }
-        return $content['pr'];
+
+        $verify_url = $content['verify'];
+        $pr = $content['pr'];
+
+        //log trx
+        $trx = new Transaction();
+        $trx->payment_request = $pr;
+        $trx->phone = $phone;
+        $trx->verify_url = $verify_url;
+        $trx->save();
+
+        return $pr;
+    }
+
+    public function sendMediaMessage($to,$type,$media,$message){
+        $data = array();
+        $data['recipient_type'] = "individual";
+        $data['to'] = $to;
+        $data['type'] = $type;
+        $data['interactive'] = [
+            'type'=> "button",
+            'header'=> [
+                'type'=>'image',
+                'image'=> [
+                    'id' =>$media,
+                ]
+            ],
+            'body'=>[
+                'text'=> $message
+            ],
+            'footer'=> [
+                'text'=>'Powered by Helaplus.com'
+            ]
+        ];
+
+        $data ['messaging_product'] = 'whatsapp';
+        $apiURL = env('META_ENDPOINT');
+        $headers = [
+            'Content-Type' => 'application/json',
+        ];
+        $token = env('META_BEARER_TOKEN');
+        $response = Http::withToken($token)->withHeaders($headers)->post($apiURL, $data);
+        return $response;
+    }
+
+    public function uploadMedia($image_path){
+        $headers = [
+            'Content-Type' => 'image/png',
+        ];
+        $data = file_get_contents($image_path);
+        $apiURL = env('META_MEDIA_ENDPOINT');
+        $token = env('META_BEARER_TOKEN');
+        $response = Http::withToken($token)->withHeaders($headers)->post($apiURL, $data);
+        return $response;
     }
 }
