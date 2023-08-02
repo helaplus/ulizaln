@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\WhatsappLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class SomachatController extends Controller
 {
@@ -115,7 +116,9 @@ class SomachatController extends Controller
         if(!$payment_request){
             return false;
         }
-        QrCode::generate($payment_request,'../public/qrcodes/qrcode.png')->format('png');
+        $qr='qr'.rand(11111,1111111).'.png';
+        QrCode::format('png')->generate($payment_request,'../public/qrcodes/'.$qr);
+        return $qr;
     }
     public function generatePaymentRequest() {
         $url='https://getalby.com/lnurlp/joseguru/callback?amount=1000';
