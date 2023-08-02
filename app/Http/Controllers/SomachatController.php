@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Illuminate\Support\Facades\Storage;
 
 class SomachatController extends Controller
 {
@@ -29,7 +30,7 @@ class SomachatController extends Controller
         //check sub
         if(!$this->checkSub($contact)){
             //Generate invoice
-            $media = $this->generateQrcode($contact);
+            $media = $this->generateQrcodeInvoice($contact);
             $message = 'Hello there, please subscribe to continue. Pay using lightning payments. An invoice has been generated for you. Use the payment request string '.$media['pr'].' or use the qr-code';
 
             $res = $this->sendMediaMessage($contact,'image',$media['qr-code'],$message);
@@ -135,7 +136,7 @@ class SomachatController extends Controller
     public function sub(){
 
     }
-    public function generateQrcode($phone){
+    public function generateQrcodeInvoice($phone){
         $payment_request=self::generatePaymentRequest($phone);
         if(!$payment_request){
             return false;
