@@ -18,6 +18,7 @@ return new class extends Migration
             $table->text('verify_url')->nullable();
             $table->double('amount_in_milisats');
             $table->integer('status')->default(0);
+            $table->string('wa_media_id')->nullable();
             $table->timestamps();
         });
     }
