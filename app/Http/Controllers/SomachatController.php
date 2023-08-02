@@ -134,7 +134,7 @@ class SomachatController extends Controller
             return false;
         }
         $qr='qr'.rand(11111,1111111).'.png';
-        QrCode::format('png')->generate($payment_request,'../public/qrcodes/'.$qr);
+        QrCode::format('png')->generate($payment_request,'../storage/qrcodes/'.$qr);
         return $qr;
     }
     public function generatePaymentRequest() {
