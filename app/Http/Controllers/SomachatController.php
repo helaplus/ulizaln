@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Illuminate\Support\Facades\Storage;
 
 class SomachatController extends Controller
 {
@@ -134,8 +135,9 @@ class SomachatController extends Controller
             return false;
         }
         $qr='qr'.rand(11111,1111111).'.png';
-        QrCode::format('png')->generate($payment_request,'../storage/qrcodes/'.$qr);
-        return $qr;
+        $path=Storage::path('qrcodes/'.$qr);
+        QrCode::format('png')->generate($payment_request,$path);
+        return ['pr'=>$payment_request,'qr'=>$path];
     }
     public function generatePaymentRequest() {
         $url=config('app.lightinging_url');
