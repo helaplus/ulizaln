@@ -185,4 +185,6 @@ return [
         // 'Example' => App\Facades\Example::class,
     ])->toArray(),
 
+    'lightinging_url'=>env('LIGHTINING_URL'),
+
 ];

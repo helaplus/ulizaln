@@ -121,7 +121,7 @@ class SomachatController extends Controller
         return $qr;
     }
     public function generatePaymentRequest() {
-        $url='https://getalby.com/lnurlp/joseguru/callback?amount=1000';
+        $url=config('app.lightinging_url');
         $response=Http::get($url);
         $content =json_decode($response->body(),true);
         if(!$content){
