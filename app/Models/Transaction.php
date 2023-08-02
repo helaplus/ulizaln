@@ -12,6 +12,7 @@ class Transaction extends Model
     protected $table = 'transactions';
 
     protected $fillable = [
-        'phone','payment_request','verify_url','amount_in_milisats','status'
+        'phone','payment_request','verify_url',
+        'amount_in_milisats','status','wa_media_id'
     ];
 }
