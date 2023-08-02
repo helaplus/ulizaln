@@ -128,7 +128,7 @@ class SomachatController extends Controller
     public function sub(){
 
     }
-    public function generateQrcode(){
+    public function generateQrcodeInvoice(){
         $payment_request=self::generatePaymentRequest();
         if(!$payment_request){
             return false;
