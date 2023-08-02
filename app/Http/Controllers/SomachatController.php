@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Subscription;
 use App\Models\WhatsappLog;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
@@ -11,7 +13,6 @@ class SomachatController extends Controller
 {
 
     public function receiver(Request $request){
-
         $WhatsappLog = new WhatsappLog();
         $WhatsappLog->details = json_encode($request->all());
         $WhatsappLog->save();
@@ -20,7 +21,14 @@ class SomachatController extends Controller
             $details = $request->json()->all();
         }
 
+
         $contact = $details['contacts'][0]['wa_id'];
+
+        //check sub
+        if(!$this->checkSub($contact)){
+            //Generate invoice
+            $message = 'Hello there, please subscribe to continue';
+        }
 
             if(isset($details['messages'][0]['interactive']['button_reply'])){
 
@@ -104,8 +112,17 @@ class SomachatController extends Controller
         return $response;
     }
 
-    public function checkSub(){
-
+    public function checkSub($phone){
+        $sub = Subscription::query()->where('phone',$phone)->first();
+        if($sub){
+            if(Carbon::parse($sub->end_date)->greaterThanOrEqualTo(Carbon::now()) ){
+                return true;
+            }else{
+                return false;
+            }
+        }else{
+            return false;
+        }
     }
 
     public function sub(){

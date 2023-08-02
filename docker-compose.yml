@@ -1,0 +1,86 @@
+version: '3'
+
+services:
+  #PHP Service
+  ulizaln-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: php:fpm-alpine
+    container_name: ulizaln-app
+    restart: unless-stopped
+    tty: true
+    environment:
+      SERVICE_NAME: ulizaln-app
+      SERVICE_TAGS: ulizaln-dev
+      working_dir: /var/www
+    volumes:
+      - ./:/var/www
+      - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
+    networks:
+      - ulizaln-network
+
+  #Nginx Service
+  ulizaln-webserver:
+    image: nginx:alpine
+    container_name: ulizaln-webserver
+    restart: unless-stopped
+    tty: true
+    expose:
+      - "80"
+    environment:
+      - VIRTUAL_HOST=${HOST_URL}
+      - VIRTUAL_PORT=${VIRTUAL_PORT}
+      - LETSENCRYPT_HOST=${HOST_URL}
+      - LETSENCRYPT_EMAIL=${MAIL_ENCRYPTION}
+    volumes:
+      - ./:/var/www
+      - ./nginx/conf.d/:/etc/nginx/conf.d/
+    networks:
+      - ulizaln-network
+
+  #MySQL Service
+  ulizaln-db:
+    image: mysql:5.7.22
+    container_name: ulizaln-db
+    restart: unless-stopped
+    tty: true
+    expose:
+      - "3306"
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      SERVICE_TAGS: ulizaln-dev
+      SERVICE_NAME: ulizaln-mysql
+    volumes:
+      - dbdata:/var/lib/mysql
+      - ./mysql/my.cnf:/etc/mysql/my.cnf
+    networks:
+      - default
+      - ulizaln-network
+
+  ulizaln-phpmyadmin:
+    links:
+      - ulizaln-db
+    image: phpmyadmin/phpmyadmin
+    container_name: ulizaln-phpmyadmin
+    restart: unless-stopped
+    ports:
+      - 8082:80
+    environment:
+      PMA_PORT: 3306
+      PMA_HOST: ulizaln-db
+      UPLOAD_LIMIT: 1000000000
+    networks:
+      - default
+
+#Docker Networks
+networks:
+  ulizaln-network:
+    external:
+      name: nginx-proxy
+
+#Volumes
+volumes:
+  dbdata:
+    driver: local
