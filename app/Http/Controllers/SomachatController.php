@@ -110,8 +110,20 @@ class SomachatController extends Controller
     public function sub(){
 
     }
-    public function generatePaymentRequest():string {
-        $url='https://getalby.com/lnurlp/kodylow/callback?amount=1000';
+    public function generateQrcode(){
+        $payment_request=self::generatePaymentRequest();
+        if(!$payment_request){
+            return false;
+        }
+        QrCode::generate($payment_request,'../public/qrcodes/qrcode.png')->format('png');
+    }
+    public function generatePaymentRequest() {
+        $url='https://getalby.com/lnurlp/joseguru/callback?amount=1000';
         $response=Http::get($url);
+        $content =json_decode($response->body(),true);
+        if(!$content){
+            return false;
+        }
+        return $content['pr'];
     }
 }
