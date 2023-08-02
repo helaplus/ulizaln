@@ -16,3 +16,5 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::post('/soma/receiver', [\App\Http\Controllers\SomachatController::class, 'receiver'])->name('soma.receiver');
