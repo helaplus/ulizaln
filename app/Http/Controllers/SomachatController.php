@@ -33,9 +33,9 @@ class SomachatController extends Controller
             $media = $this->generateQrcodeInvoice($contact);
             $message = 'Hello there, please subscribe to continue. Pay using lightning payments. An invoice has been generated for you. Use the payment request string '.PHP_EOL.$media['pr'].PHP_EOL.' or use the qr-code';
 
-            $res = $this->sendResponse($contact,'text',$message);
+            // $res = $this->sendResponse($contact,'text',$message);
 
-            // $res = $this->sendMediaMessage($contact,'image',$media['qr-code'],$message);
+            $res = $this->sendMediaMessage($contact,'image',$media['qr-code'],$message);
             Log::info(json_encode($res));
             exit;
         }
