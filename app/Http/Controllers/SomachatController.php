@@ -152,12 +152,12 @@ class SomachatController extends Controller
         $trx = Transaction::query()->where('payment_request',$payment_request)->first();
         $qrcode_url = Storage::url($qr);
         if($trx){
-            $trx->wa_media_id = $res['media'][0]['id'];
+            $trx->wa_media_id = $res['id'];
             $trx->save();
         }
 
         return [
-            'qr-code' => $res['media'][0]['id'],
+            'qr-code' => $res['id'],
             'pr' => $payment_request
         ];
     }
@@ -229,6 +229,8 @@ class SomachatController extends Controller
         $apiURL = env('META_MEDIA_ENDPOINT');
         $token = env('META_BEARER_TOKEN');
         $response = Http::withToken($token)->withHeaders($headers)->post($apiURL, $data);
+
+        Log::info(json_encode($response));
         return $response;
     }
 }
