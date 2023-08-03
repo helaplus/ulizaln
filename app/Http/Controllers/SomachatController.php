@@ -40,15 +40,15 @@ class SomachatController extends Controller
             exit;
         }
 
-            if(isset($details['messages'][0]['interactive']['button_reply'])){
+            // if(isset($details['messages'][0]['interactive']['button_reply'])){
 
-                //button reply action:
-                $response = $this->processButtonReply($details);
-                if($response !=null){
-                    $this->sendResponse($contact,'text',$response);
-                }
-                return response()->json(['message'=>"success"],200);
-            }
+            //     //button reply action:
+            //     $response = $this->processButtonReply($details);
+            //     if($response !=null){
+            //         $this->sendResponse($contact,'text',$response);
+            //     }
+            //     return response()->json(['message'=>"success"],200);
+            // }
             if(isset($details['messages'][0]['interactive']['list_reply'])){
                 $message = $details['messages'][0]['interactive']['list_reply']['id'];
             }else{
@@ -61,6 +61,12 @@ class SomachatController extends Controller
             }
             $message = strtolower($message);
             $message = $this->getResponseFromChatGPT($message);
+
+
+            $WhatsappLog = new WhatsappLog();
+            $WhatsappLog->details = $message;
+            $WhatsappLog->save();
+
             $this->sendResponse($contact,'text',$message);
             return response()->json(['message'=>"success"],200);
     }
