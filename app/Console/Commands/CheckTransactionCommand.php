@@ -42,12 +42,22 @@ class CheckTransactionCommand extends Command
                 }
 
                 if($content['settled']){
-                    $subscription = new Subscription();
-                    $subscription->phone = $trx->phone;
-                    $subscription->status = 1;
-                    $subscription->start_date = Carbon::now()->toDateTimeString();
-                    $subscription->end_date = Carbon::now()->addDays(30)->toDateTimeString();
-                    $subscription->save();
+
+                    $check_sub = Subscription::query()->where('phone',$trx->phone)->first();
+                    if($check_sub){
+                        $check_sub->status = 1;
+                        $check_sub->start_date = Carbon::now()->toDateTimeString();
+                        $check_sub->end_date = Carbon::now()->addDays(30)->toDateTimeString();
+                        $check_sub->save();
+                    }else{
+                        $subscription = new Subscription();
+                        $subscription->phone = $trx->phone;
+                        $subscription->status = 1;
+                        $subscription->start_date = Carbon::now()->toDateTimeString();
+                        $subscription->end_date = Carbon::now()->addDays(30)->toDateTimeString();
+                        $subscription->save();
+                    }
+
 
                     $trx_update = Transaction::query()->find($trx->id);
                     $trx_update->status = 1;
