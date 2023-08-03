@@ -61,7 +61,7 @@ class CheckTransactionCommand extends Command
 
                     $trx_update = Transaction::query()->find($trx->id);
                     $trx_update->status = 1;
-                    $trx->save();
+                    $trx_update->save();
                 }
 
             }
