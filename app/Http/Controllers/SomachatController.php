@@ -219,6 +219,7 @@ class SomachatController extends Controller
         $headers = [
             'Content-Type' => 'image/png',
         ];
+        Log::info($image_path);
         $data = file_get_contents($image_path);
         $apiURL = env('META_MEDIA_ENDPOINT');
         $token = env('META_BEARER_TOKEN');
