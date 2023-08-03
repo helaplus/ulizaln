@@ -31,7 +31,7 @@ class SomachatController extends Controller
         if(!$this->checkSub($contact)){
             //Generate invoice
             $media = $this->generateQrcodeInvoice($contact);
-            $message = 'Hello there, please subscribe to continue. Pay using lightning payments. An invoice has been generated for you. Use the payment request string '.$media['pr'].' or use the qr-code';
+            $message = 'Hello there, please subscribe to continue. Pay using lightning payments. An invoice has been generated for you. Use the payment request string '.PHP_EOL.$media['pr'].PHP_EOL.' or use the qr-code';
 
             $res = $this->sendResponse($contact,'text',$message);
 
