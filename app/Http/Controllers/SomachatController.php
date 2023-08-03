@@ -31,11 +31,11 @@ class SomachatController extends Controller
         if(!$this->checkSub($contact)){
             //Generate invoice
             $media = $this->generateQrcodeInvoice($contact);
-            $message = 'Hello there, please subscribe to continue. Pay using lightning payments. An invoice has been generated for you. Use the payment request string '.PHP_EOL.$media['pr'].PHP_EOL.' or use the qr-code';
+            $message = 'Hello there, please subscribe to continue. Pay using lightning payments. A lightning invoice has been generated for you. Copy the payment request string below to your lightning wallet and complete the payment.'.PHP_EOL.PHP_EOL.$media['pr'];
 
-            // $res = $this->sendResponse($contact,'text',$message);
+            $res = $this->sendResponse($contact,'text',$message);
 
-            $res = $this->sendMediaMessage($contact,'image',$media['qr-code'],$message);
+            // $res = $this->sendMediaMessage($contact,'image',$media['qr-code'],$message);
             // Log::info(json_encode($res));
             exit;
         }
@@ -113,13 +113,13 @@ class SomachatController extends Controller
             'body' =>$message
         ];
 
-        $apiURL = env('ONE_HELA_ENDPOINT');
+        $apiURL = env('META_ENDPOINT');
         $headers = [
             'Content-Type' => 'application/json',
         ];
         $token = env('META_BEARER_TOKEN');
-        //$response = Http::withToken($token)->withHeaders($headers)->post($apiURL, $data);
-        $response = Http::withHeaders($headers)->post($apiURL, $data);
+        $response = Http::withToken($token)->withHeaders($headers)->post($apiURL, $data);
+        // $response = Http::withHeaders($headers)->post($apiURL, $data);
         return $response;
     }
 
@@ -147,17 +147,16 @@ class SomachatController extends Controller
 
         $qr='qr'.rand(11111,1111111).'.png';
         QrCode::format('png')->generate($payment_request,storage_path($qr));
-        $res = $this->uploadMedia(storage_path($qr));
+        // $res = $this->uploadMedia(storage_path($qr));
 
         $trx = Transaction::query()->where('payment_request',$payment_request)->first();
-        $qrcode_url = Storage::url($qr);
         if($trx){
-            $trx->wa_media_id = $res['id'];
+            $trx->wa_media_id = storage_path($qr);
             $trx->save();
         }
 
         return [
-            'qr-code' => $res['id'],
+            'qr-code' => storage_path($qr),
             'pr' => $payment_request
         ];
     }
