@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Laravel</title>
+        <title>Uliza</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
@@ -49,7 +49,7 @@
                                     </svg>
                                 </div>
 
-                                <h2 class="mt-6 text-xl font-semibold text-gray-900 dark:text-white">Introducing the Futuristic WhatsApp Bot with Lightning Speed Subscriptions! </h2>
+                                <h2 class="mt-6 text-xl font-semibold text-gray-900 dark:text-white">Introducing Uliza the Futuristic WhatsApp Bot with Lightning Speed Subscriptions! </h2>
 
                                 <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
                                     Step into the cutting-edge world of AI with our groundbreaking WhatsApp Bot Service! 🌐💬 Powered by Artificial Intelligence and integrated with Lightning Payments, our innovative platform is here to revolutionize your messaging experience like never before. Say hello to lightning-fast interactions, seamless subscriptions, and unparalleled convenience!
@@ -141,11 +141,11 @@
                                 Ready to embrace the future of messaging and AI technology? Subscribe to our AI-based WhatsApp Bot Service with Lightning Payments today, and unlock a world of convenience and efficiency like never before!
                                 </p>
                                 <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
-                                    🌐 Connect with us now to explore the endless possibilities of our cutting-edge AI platform. Let's embark on this exciting journey together! 🚀💬
+                                    🌐 Connect with us now by saving phone number +254xxxxxxxxx. Send a chat to the phone number to explore the endless possibilities of our cutting-edge AI platform. Let's embark on this exciting journey together! 🚀💬
 
                                                                 </p>
                                 <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
-                                    (Note: Lightning Payments refers to a technology that utilizes the Lightning Network, a second-layer protocol built on top of the Bitcoin blockchain, to enable faster and more cost-effective transactions.)
+                                    (Note: Uliza uses lightning invoices which is a payment request. You fulfill this payment request using your lightning wallet. Lightning Payments refers to a technology that utilizes the Bitcoin Lightning Network, a second-layer protocol built on top of the Bitcoin blockchain, to enable faster and more cost-effective transactions.)
 
                                 </p>
                             </div>
