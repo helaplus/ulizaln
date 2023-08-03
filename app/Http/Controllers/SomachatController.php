@@ -147,17 +147,17 @@ class SomachatController extends Controller
 
         $qr='qr'.rand(11111,1111111).'.png';
         QrCode::format('png')->generate($payment_request,storage_path($qr));
-        // $res = $this->uploadMedia(storage_path($qr));
-        // Log::info(json_encode($res));
+        $res = $this->uploadMedia(storage_path($qr));
+        Log::info(json_encode($res));
         $trx = Transaction::query()->where('payment_request',$payment_request)->first();
         $qrcode_url = Storage::url($qr);
         if($trx){
-            $trx->wa_media_id = $qrcode_url;
+            $trx->wa_media_id = $res['media'][0]['id'];
             $trx->save();
         }
 
         return [
-            'qr-code' => $qrcode_url,
+            'qr-code' => $res['media'][0]['id'],
             'pr' => $payment_request
         ];
     }
