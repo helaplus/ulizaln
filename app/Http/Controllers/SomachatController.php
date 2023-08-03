@@ -174,6 +174,7 @@ class SomachatController extends Controller
         $trx->payment_request = $pr;
         $trx->phone = $phone;
         $trx->verify_url = $verify_url;
+        $trx->amount_in_milisats = 1000;
         $trx->save();
 
         return $pr;
