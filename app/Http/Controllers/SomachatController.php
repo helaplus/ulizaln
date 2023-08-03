@@ -230,6 +230,7 @@ class SomachatController extends Controller
         $token = env('META_BEARER_TOKEN');
         $response = Http::withToken($token)->withHeaders($headers)->post($apiURL, $data);
 
+        Log::info("UPLOAD MEDIA RESPONSE");
         Log::info(json_encode($response));
         return $response;
     }
