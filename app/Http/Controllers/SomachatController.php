@@ -133,11 +133,14 @@ class SomachatController extends Controller
         $sub = Subscription::query()->where('phone',$phone)->first();
         if($sub){
             if(Carbon::parse($sub->end_date)->greaterThanOrEqualTo(Carbon::now()) ){
+                Log::info('TRUE');
                 return true;
             }else{
+                Log::info('FALSE');
                 return false;
             }
         }else{
+            Log::info('FALSE');
             return false;
         }
     }
