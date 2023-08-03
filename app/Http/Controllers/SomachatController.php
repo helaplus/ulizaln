@@ -217,11 +217,15 @@ class SomachatController extends Controller
 
     public function uploadMedia($image_path){
         $headers = [
-            'Content-Type' => 'image/png',
+            'Content-Type' => 'application/json',
         ];
 
-        $data = file_get_contents($image_path);
-        Log::info($data);
+        $data_img = file_get_contents($image_path);
+        $data = array();
+        $data['messaging_product'] = "whatsapp";
+        $data['type'] = 'image/png';
+        $data['file'] = $data_img;
+
         $apiURL = env('META_MEDIA_ENDPOINT');
         $token = env('META_BEARER_TOKEN');
         $response = Http::withToken($token)->withHeaders($headers)->post($apiURL, $data);
