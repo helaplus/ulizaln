@@ -220,11 +220,11 @@ class SomachatController extends Controller
             'Content-Type' => 'application/json',
         ];
 
-        $data_img = file_get_contents($image_path);
+        // $data_img = file_get_contents($image_path);
         $data = array();
         $data['messaging_product'] = "whatsapp";
         $data['type'] = 'image/png';
-        $data['file'] = $data_img;
+        $data['file'] = $image_path;
 
         $apiURL = env('META_MEDIA_ENDPOINT');
         $token = env('META_BEARER_TOKEN');
